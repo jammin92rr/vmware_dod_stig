@@ -1,0 +1,19 @@
+name: VMware Aria Operations for Logs Appliance 8.x Cassandra Profile
+title: VMware Aria Operations for Logs Appliance 8.x Cassandra Profile
+maintainer: VTAE
+copyright: VTAE 2024
+copyright_email: stigs@broadcom.com
+license: Apache-2.0
+summary: An InSpec Compliance Profile
+version: 1.0.4
+
+inputs:
+- name: cassandraconfig
+  type: string
+  value: /usr/lib/loginsight/application/lib/apache-cassandra-4.1.3/conf/cassandra.yaml
+- name: cassandraroot
+  type: string
+  value: /usr/lib/loginsight/application/lib/apache-cassandra-4.1.3
+- name: ipaddress
+  type: string
+  value: "10.10.10.10"

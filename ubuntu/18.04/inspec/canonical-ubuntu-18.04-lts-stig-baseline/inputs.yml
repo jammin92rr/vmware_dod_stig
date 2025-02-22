@@ -1,0 +1,2 @@
+sudo_accounts: [ "ubuntu" ]
+standard_audit_log_size: 2187740

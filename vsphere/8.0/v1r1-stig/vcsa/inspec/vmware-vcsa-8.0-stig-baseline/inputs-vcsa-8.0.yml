@@ -1,0 +1,4 @@
+authprivlog: /var/log/audit/sshinfo.log
+useHistoryConf: false
+useFaillockConf: true
+usePwqualityConf: false
