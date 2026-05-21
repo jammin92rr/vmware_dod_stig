@@ -83,7 +83,7 @@ param (
   [string]$nativeVLAN = "1",
   [Parameter(Mandatory=$false,
   HelpMessage="Specify the latest ESXi build to verify hosts are patched.")]
-  [string]$esxiBuild = "24022510"
+  [string]$esxiBuild = "24674464"
 )
 
 ##### Default STIG Values #####
@@ -134,7 +134,7 @@ $stigsettings = [ordered]@{
   ##### Environment Specific STIG Values #####
   syslogHost              = @{"Syslog.global.logHost" = $syslogServer}   #ESXI-80-000114
   ntpServers              = $ntpServers #ESXI-80-000124
-  issueBanner             = "You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions: -The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations. -At any time, the USG may inspect and seize data stored on this IS. -Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose. -This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy. -Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details."
+  issueBanner             = "This information system is provided for MITRE business use in accordance with MITRE’s Policies and Procedures. By proceeding, you acknowledge that MITRE monitors and stores all activity generated on this system as appropriate for business and security operations and that MITRE may audit or disclose such activity or information as permitted by law. Users also acknowledge that unauthorized use of the information systems is prohibited and is subject to criminal and civil penalties. This information system may contain Controlled Unclassified Information (CUI) with specific requirements imposed by MITRE’s contracts, or other information subject to requirements or restrictions under applicable law, regulation, or contract (e.g., export-controlled information, privacy)."
   allowedips              = $allowedIPs  #ESXI-80-000239 Allows IP ranges for the ESXi firewall
   esxAdminsGroup          = @{"Config.HostAgent.plugins.hostsvc.esxAdminsGroup" = $esxAdminGroup} #ESXI-80-000241
   syslogScratch           = @{"Syslog.global.logDir" = "[] /scratch/log"} #ESXI-80-000243
@@ -144,50 +144,29 @@ $stigsettings = [ordered]@{
 
 #ESXI-80-000006
 $welcomeBanner = @"
-{bgcolor:black} {/color}{align:left}{bgcolor:black}{color:yellow}{hostname} , {ip}{/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:black}{color:yellow}{esxproduct} {esxversion}{/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:black}{color:yellow}{memory} RAM{/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:black}{color:white}	{/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}                                                              {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}  You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By    {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}  using this IS (which includes any device attached to this IS), you consent to the following conditions:         {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}                                                              {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}  -     The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited   {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}      to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law    {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}      enforcement (LE), and counterintelligence (CI) investigations.                          {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}                                                              {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}  -     At any time, the USG may inspect and seize data stored on this IS.                        {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}                                                              {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}  -     Communications using, or data stored on, this IS are not private, are subject to routine monitoring,      {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}      interception, and search, and may be disclosed or used for any USG-authorized purpose.              {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}                                                              {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}  -     This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not   {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}      for your personal benefit or privacy.                                       {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}                                                              {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}  -     Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching  {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}      or monitoring of the content of privileged communications, or work product, related to personal representation  {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}      or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work     {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}      product are private and confidential. See User Agreement for details.                       {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{align:left}{bgcolor:yellow}{color:black}                                                              {/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
-{bgcolor:black} {/color}{align:left}{bgcolor:dark-grey}{color:white}  <F2> Accept Conditions and Customize System / View Logs{/align}{align:right}<F12> Accept Conditions and Shut Down/Restart  {bgcolor:black} {/color}{/color}{/bgcolor}{/align}
-{bgcolor:black} {/color}{bgcolor:dark-grey}{color:black}                                                              {/color}{/bgcolor}
+{bgcolor:black}{align:left}{color:yellow}{hostname} , {ip}{/color}{/align}{/bgcolor}
+{bgcolor:black}{align:left}{color:yellow}{esxproduct} {esxversion}{/color}{/align}{/bgcolor}
+{bgcolor:black}{align:left}{color:yellow}{memory} RAM{/color}{/align}{/bgcolor}
+{bgcolor:black}{align:left}{color:white}       {/color}{/align}{/bgcolor}
+{bgcolor:yellow}{align:left}{color:black}  This information system is provided for MITRE business use in accordance with MITRE’s Policies and Procedures. {/color}{/align}{/bgcolor}
+{bgcolor:yellow}{align:left}{color:black}  By proceeding, you acknowledge that MITRE monitors and stores all activity generated on this system as appropriate {/color}{/align}{/bgcolor}
+{bgcolor:yellow}{align:left}{color:black}  for business and security operations and that MITRE may audit or disclose such activity or information as          {/color}{/align}{/bgcolor}
+{bgcolor:yellow}{align:left}{color:black}  permitted by law. Users also acknowledge that unauthorized use of the information systems is prohibited and is     {/color}{/align}{/bgcolor}
+{bgcolor:yellow}{align:left}{color:black}  subject to criminal and civil penalties. This information system may contain Controlled Unclassified Information   {/color}{/align}{/bgcolor}
+{bgcolor:yellow}{align:left}{color:black}  (CUI) with specific requirements imposed by MITRE’s contracts, or other information subject to requirements or     {/color}{/align}{/bgcolor}
+{bgcolor:yellow}{align:left}{color:black}  restrictions under applicable law, regulation, or contract (e.g., export-controlled information, privacy).         {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:white}<F2> Accept Conditions and Customize System / View Logs{/color}{/align}{align:right}{color:white}<F12> Accept Conditions and Shut Down/Restart{/color}{/align}{/bgcolor}
+{bgcolor:dark-grey}{align:left}{color:black}                                                              {/color}{/align}{/bgcolor}
 "@
 
 ##### Setup report variables ####
@@ -238,7 +217,7 @@ $controlsenabled = [ordered]@{
   ESXI80000211 = $true  #SSH ClientAliveInterval 200
   ESXI80000212 = $true  #SNMP
   ESXI80000213 = $true  #Memory Salting
-  ESXI80000214 = $true  #Default Firewall
+  ESXI80000214 = $false  #Default Firewall
   ESXI80000215 = $true  #BPDU
   ESXI80000216 = $true  #Forged Transmits
   ESXI80000217 = $true  #MAC Changes
@@ -263,7 +242,7 @@ $controlsenabled = [ordered]@{
   ESXI80000236 = $true  #VM Override
   ESXI80000237 = $true  #Vm Override Logger
   ESXI80000238 = $true  #TPM Config encryption
-  ESXI80000239 = $true  #Firewall Rules
+  ESXI80000239 = $false  #Firewall Rules
   ESXI80000240 = $true  #Authentication Proxy
   ESXI80000241 = $true  #SSH PermitRootLogin no
   ESXI80000243 = $true  #Persistent Logs
